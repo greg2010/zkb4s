@@ -1,5 +1,8 @@
 package org.red.zkb4s.RedisQ
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 object RedisQSchema {
 
   case class RootPackage(`package`: Option[KillPackage])
@@ -17,7 +20,9 @@ object RedisQSchema {
 
   case class EntityDef(id: Long, name: String)
 
-  case class WeaponType(id: Option[Long], name: String)  // id is [None] if WeaponType is Ship
+  case class WeaponType(id: Option[Long], name: String)
+
+  // id is [None] if WeaponType is Ship
 
   case class SolarSystem(id: Long)
 
@@ -34,7 +39,9 @@ object RedisQSchema {
 
   case class Item(itemType: EntityDef,
                   quantityDestroyed: Option[Long], // Null if none destroyed
-                  quantityDropped: Option[Long])   // Null if none dropped
+                  quantityDropped: Option[Long])
+
+  // Null if none dropped
 
   case class Victim(character: Option[EntityDef], // Null if structure
                     corporation: EntityDef,
@@ -48,4 +55,75 @@ object RedisQSchema {
                  hash: String,
                  totalValue: Double,
                  points: Long)
+
+}
+
+object RedisQSchema2CommonSchema {
+
+  import  RedisQSchema._
+
+  private def string2Date(s: String): Date = {
+    new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").parse(s)
+  }
+
+  private implicit def optionEntity2id(entity: Option[EntityDef]): Option[Long] = {
+    entity match {
+      case Some(ent) => Some(ent.id)
+      case None => None
+    }
+  }
+
+  private implicit def entity2id(entity: EntityDef): Long = {
+    entity.id
+  }
+
+  private implicit def item2item(item: Item): org.red.zkb4s.CommonSchemas.Item = {
+    org.red.zkb4s.CommonSchemas.Item(
+      itemId = item.itemType,
+      quantityDestroyed = item.quantityDestroyed.getOrElse(0),
+      quantityDropped = item.quantityDropped.getOrElse(0)
+    )
+  }
+
+  private implicit def itemList2itemList(itemList: List[Item]): List[org.red.zkb4s.CommonSchemas.Item] = {
+    itemList.map(item2item)
+  }
+
+  private implicit def victim2victim(victim: Victim): org.red.zkb4s.CommonSchemas.Victim = {
+    org.red.zkb4s.CommonSchemas.Victim(
+      shipId = victim.shipType,
+      character = org.red.zkb4s.CommonSchemas.Character(
+        characterId = victim.character,
+        corporationId = Some(victim.corporation.id),
+        allianceId = victim.alliance),
+      items = victim.items.getOrElse(List()),
+      damageTaken = victim.damageTaken
+    )
+  }
+
+  private implicit def position2position(position: Position): org.red.zkb4s.CommonSchemas.Position = {
+    org.red.zkb4s.CommonSchemas.Position(
+      x = position.x,
+      y = position.y,
+      z = position.z
+    )
+  }
+
+  private implicit def zkb2zkbMetaData(zkb: Zkb): org.red.zkb4s.CommonSchemas.ZkbMetaData = {
+    org.red.zkb4s.CommonSchemas.ZkbMetaData(
+      hash = zkb.hash,
+      totalValue = zkb.totalValue,
+      points = zkb.points)
+  }
+
+  implicit def converter(killPackage: KillPackage): org.red.zkb4s.CommonSchemas.Killmail = {
+    org.red.zkb4s.CommonSchemas.Killmail(
+      killId = killPackage.killID,
+      killTime = string2Date(killPackage.killmail.killTime),
+      victim = killPackage.killmail.victim,
+      attackers = List(),
+      position = killPackage.killmail.victim.position,
+      zkbMetadata = killPackage.zkb
+    )
+  }
 }

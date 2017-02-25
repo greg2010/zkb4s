@@ -2,48 +2,20 @@ name := "zkb4s"
 
 organization := "org.red"
 
-version := "1.0.0"
+version := "1.0.1"
 
 scalaVersion := "2.12.1"
 
-publishMavenStyle := true
+publishTo := Some("greg2010-sbt-local" at "http://maven.red.greg2010.me/artifactory/sbt-local")
+credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
-
-publishArtifact in Test := false
-pomIncludeRepository := { _ => false }
-
-pomExtra := (
-  <url>https://github.com/greg2010/zkb4s</url>
-    <licenses>
-      <license>
-        <name>MIT</name>
-        <url>https://opensource.org/licenses/MIT</url>
-        <distribution>repo</distribution>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:greg2010/zkb4s.git</url>
-      <connection>scm:git@github.com:greg2010/zkb4s.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>greg2010</id>
-        <name>greg2010</name>
-        <url>N/A</url>
-      </developer>
-    </developers>)
+resolvers += Resolver.jcenterRepo
 
 val http4sVersion = "0.15.5a"
 val circeVersion = "0.7.0"
 
 libraryDependencies ++= Seq(
+  "joda-time" % "joda-time" % "2.9.7",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "org.scalaz" %% "scalaz-core" % "7.2.9",
   "io.circe" %% "circe-core" % circeVersion,
