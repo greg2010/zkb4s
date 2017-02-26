@@ -7,7 +7,8 @@ import org.http4s.client.Client
 import org.http4s.{Uri, _}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatterBuilder
-import org.red.zkb4s.zkb.zkillboard.Killmail
+import org.red.zkb4s.zkb.ZkillboardSchema.Killmail
+import org.red.zkb4s.zkb.ZkillboardSchema2CommonSchema.converter
 
 import scalaz.concurrent.Task
 
@@ -55,7 +56,7 @@ case class ZKBRequest(
     def /()                 = u.copy(path = u.path + "/")
   }
 
-  def build()(implicit c: Client): Task[List[Killmail]] = {
+  def build()(implicit c: Client): Task[List[org.red.zkb4s.CommonSchemas.Killmail]] = {
     val start = this._start map (zkbdateformatter.print) map ("startTime/" + _)
     val end   = this._end map (zkbdateformatter.print) map ("endTime/" + _)
     val uri = modifiers.foldLeft(baseurl /? typemodifier) { (u, kv) =>
@@ -66,7 +67,9 @@ case class ZKBRequest(
 
     val req = Request(uri = uriWithTimes /(), method = Method.GET).putHeaders(Header("User-Agent", this.useragent))
 
-    implicit val jdec = jsonOf[List[zkillboard.Killmail]]
-    c.fetchAs[List[zkillboard.Killmail]](req)
+    implicit val jdec = jsonOf[List[ZkillboardSchema.Killmail]]
+    c.fetchAs[List[ZkillboardSchema.Killmail]](req).flatMap { res =>
+      Task(res.map(ZkillboardSchema2CommonSchema.converter))
+    }
   }
 }

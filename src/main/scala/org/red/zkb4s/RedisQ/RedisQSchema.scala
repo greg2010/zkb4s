@@ -1,5 +1,7 @@
 package org.red.zkb4s.RedisQ
 
+import scala.language.implicitConversions
+
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -18,7 +20,7 @@ object RedisQSchema {
                       attackerCount: Long,
                       victim: Victim)
 
-  case class EntityDef(id: Long, name: String)
+  case class EntityDef(id: Long, name: Option[String])
 
   case class WeaponType(id: Option[Long], name: String)
 
@@ -85,10 +87,6 @@ object RedisQSchema2CommonSchema {
     )
   }
 
-  private implicit def itemList2itemList(itemList: List[Item]): List[org.red.zkb4s.CommonSchemas.Item] = {
-    itemList.map(item2item)
-  }
-
   private implicit def victim2victim(victim: Victim): org.red.zkb4s.CommonSchemas.Victim = {
     org.red.zkb4s.CommonSchemas.Victim(
       shipId = victim.shipType,
@@ -96,17 +94,30 @@ object RedisQSchema2CommonSchema {
         characterId = victim.character,
         corporationId = Some(victim.corporation.id),
         allianceId = victim.alliance),
-      items = victim.items.getOrElse(List()),
+      items = victim.items.getOrElse(List()).map(item2item),
       damageTaken = victim.damageTaken
     )
   }
 
-  private implicit def position2position(position: Position): org.red.zkb4s.CommonSchemas.Position = {
-    org.red.zkb4s.CommonSchemas.Position(
+  private implicit def attacker2attacker(attacker: Attacker): org.red.zkb4s.CommonSchemas.Attacker = {
+    org.red.zkb4s.CommonSchemas.Attacker(
+      shipId = attacker.shipType,
+      character = org.red.zkb4s.CommonSchemas.Character(
+        characterId = attacker.character,
+        corporationId = attacker.corporation,
+        allianceId = attacker.alliance),
+      weaponType = attacker.weaponType.getOrElse(WeaponType(None, "")).id,
+      damageDone = attacker.damageDone,
+      finalBlow = attacker.finalBlow,
+      securityStatus = attacker.securityStatus)
+  }
+
+  private implicit def position2position(position: Position): Option[org.red.zkb4s.CommonSchemas.Position] = {
+
+    Some(org.red.zkb4s.CommonSchemas.Position(
       x = position.x,
       y = position.y,
-      z = position.z
-    )
+      z = position.z))
   }
 
   private implicit def zkb2zkbMetaData(zkb: Zkb): org.red.zkb4s.CommonSchemas.ZkbMetaData = {
@@ -121,7 +132,8 @@ object RedisQSchema2CommonSchema {
       killId = killPackage.killID,
       killTime = string2Date(killPackage.killmail.killTime),
       victim = killPackage.killmail.victim,
-      attackers = List(),
+      attackers = killPackage.killmail.attackers.map(attacker2attacker),
+      solarSystem = killPackage.killmail.solarSystem,
       position = killPackage.killmail.victim.position,
       zkbMetadata = killPackage.zkb
     )

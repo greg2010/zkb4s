@@ -9,7 +9,8 @@ object CommonSchemas {
                       killTime: Date,
                       victim: Victim,
                       attackers: List[Attacker],
-                      position: Position,
+                      solarSystem: Long,
+                      position: Option[Position],
                       zkbMetadata: ZkbMetaData)
 
   case class Victim(shipId: Long,

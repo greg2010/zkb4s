@@ -6,7 +6,9 @@ version := "1.0.1"
 
 scalaVersion := "2.12.1"
 
-publishTo := Some("greg2010-sbt-local" at "http://maven.red.greg2010.me/artifactory/sbt-local")
+scalacOptions ++= Seq("-deprecation", "-feature")
+
+publishTo := Some("Artifactory Realm" at "http://maven.red.greg2010.me/artifactory/sbt-local")
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 resolvers += Resolver.jcenterRepo
