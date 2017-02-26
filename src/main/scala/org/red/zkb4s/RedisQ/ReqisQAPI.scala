@@ -10,45 +10,14 @@ import org.http4s.client.Client
 
 import scala.concurrent.duration._
 import scala.annotation.tailrec
-import scala.util.control.NonFatal
 import scalaz.concurrent.Task
-import scalaz.{-\/, \/-}
 
-class ReqisQAPI(queueId: String = "", ttw: Int = 10) extends LazyLogging {
+class ReqisQAPI(queueId: String = "", ttw: Int = 10, customUserAgent: String = "Unknown Application") extends LazyLogging {
 
   private val url: Uri = Uri.unsafeFromString("https://redisq.zkillboard.com/listen.php?" +
     s"queueID=${queueId}&" +
     s"ttw=${ttw}")
-  private val userAgent = "red-zkbapi/1.0"
-/*
-  def poll()(implicit c: Client): KillPackage = {
-
-    @tailrec def next(): KillPackage = {
-      implicit val jdec = jsonOf[RootPackage]
-      val request = Request(method = Method.GET, uri = url).putHeaders(Header("User-agent", userAgent))
-      val getKillmail = c.expect[RootPackage](request)
-      getKillmail.unsafePerformSyncAttemptFor((ttw + 2).seconds) match {
-        case -\/(e) => e match {
-          case ex: InvalidMessageBodyFailure => {
-            logger.warn(s"Error deserializing json object, cause: ${ex.cause}" +
-              s" offending json: ${ex.message}")
-            next()
-          }
-          case ex if NonFatal(ex) => {
-            logger.error("Runtime exception", ex)
-            next()
-          }
-        }
-        case \/-(response) => response.`package` match {
-          case Some(x) => x
-          case None => next()
-        }
-      }
-    }
-
-    next()
-  }*/
-
+  private val userAgent = "red-zkbapi/1.0" + " " + customUserAgent
 
   def poll()(implicit c: Client): Task[RootPackage] = {
     val req = Request(uri = url)
@@ -64,7 +33,7 @@ class ReqisQAPI(queueId: String = "", ttw: Int = 10) extends LazyLogging {
     def hasNext = true
     @tailrec
     def next(): org.red.zkb4s.CommonSchemas.Killmail = {
-      poll().unsafePerformSyncFor(11.seconds).`package` match {
+      poll().unsafePerformSyncFor((ttw + 2).seconds).`package` match {
         case Some(p) => p
         case None => next()
       }

@@ -2,6 +2,8 @@ package org.red.zkb4s.zkb
 
 import scala.language.implicitConversions
 
+import  ZkillboardSchema._
+
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -67,8 +69,6 @@ object ZkillboardSchema {
 }
 
 object ZkillboardSchema2CommonSchema {
-
-  import  ZkillboardSchema._
 
   private def string2Date(s: String): Date = {
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s)

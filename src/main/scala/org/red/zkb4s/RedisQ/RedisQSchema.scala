@@ -2,6 +2,7 @@ package org.red.zkb4s.RedisQ
 
 import scala.language.implicitConversions
 
+import  RedisQSchema._
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -61,8 +62,6 @@ object RedisQSchema {
 }
 
 object RedisQSchema2CommonSchema {
-
-  import  RedisQSchema._
 
   private def string2Date(s: String): Date = {
     new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").parse(s)
