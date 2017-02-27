@@ -1,9 +1,6 @@
-package org.red.zkb4s.zkb
+package org.red.zkb4s.schema
 
-/**
-  * Created by Andi on 20/01/2016.
-  */
-object StatsTypes {
+object StatsSchema {
 
   case class Group(
       groupID: Double,

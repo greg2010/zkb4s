@@ -4,6 +4,7 @@ import io.circe.generic.auto._
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.client.Client
+import org.red.zkb4s.schema.StatsSchema
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
@@ -54,25 +55,25 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
 
       val req = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
-      implicit val jdec = jsonOf[StatsTypes.AllianceInfo]
+      implicit val jdec = jsonOf[StatsSchema.AllianceInfo]
 
-      c.fetchAs[StatsTypes.AllianceInfo](req)
+      c.fetchAs[StatsSchema.AllianceInfo](req)
     }
     def corporation(id: Long)(implicit c: Client) = {
       val fullurl = baseurl + "api/stats/corporationID/%d/".format(id)
       val req     = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
-      implicit val jdec = jsonOf[StatsTypes.CorporationInfo]
+      implicit val jdec = jsonOf[StatsSchema.CorporationInfo]
 
-      c.fetchAs[StatsTypes.CorporationInfo](req)
+      c.fetchAs[StatsSchema.CorporationInfo](req)
     }
     def character(id: Long)(implicit c: Client) = {
       val fullurl = baseurl + "api/stats/characterID/%d/".format(id)
       val req     = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
-      implicit val jdec = jsonOf[StatsTypes.CharacterInfo]
+      implicit val jdec = jsonOf[StatsSchema.CharacterInfo]
 
-      c.fetchAs[StatsTypes.CharacterInfo](req)
+      c.fetchAs[StatsSchema.CharacterInfo](req)
     }
   }
 

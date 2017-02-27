@@ -1,11 +1,12 @@
 package org.red.zkb4s.zkb
 
 import scala.language.implicitConversions
-
-import  ZkillboardSchema._
-
+import ZkillboardSchema._
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import org.red.zkb4s.schema
+import org.red.zkb4s.schema.CommonSchemas
 
 
 object ZkillboardSchema {
@@ -74,18 +75,18 @@ object ZkillboardSchema2CommonSchema {
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s)
   }
 
-  private implicit def item2item(item: Items): org.red.zkb4s.CommonSchemas.Item = {
-    org.red.zkb4s.CommonSchemas.Item(
+  private implicit def item2item(item: Items): CommonSchemas.Item = {
+    schema.CommonSchemas.Item(
       itemId = item.typeID,
       quantityDestroyed = item.qtyDestroyed,
       quantityDropped = item.qtyDropped
     )
   }
 
-  private implicit def victim2victim(victim: Victim): org.red.zkb4s.CommonSchemas.Victim = {
-    org.red.zkb4s.CommonSchemas.Victim(
+  private implicit def victim2victim(victim: Victim): CommonSchemas.Victim = {
+    schema.CommonSchemas.Victim(
       shipId = victim.shipTypeID,
-      character = org.red.zkb4s.CommonSchemas.Character(
+      character = schema.CommonSchemas.Character(
         characterId = Some(victim.characterID),
         corporationId = Some(victim.corporationID),
         allianceId = Some(victim.allianceID)),
@@ -94,10 +95,10 @@ object ZkillboardSchema2CommonSchema {
     )
   }
 
-  private implicit def attacker2attacker(attacker: Attackers): org.red.zkb4s.CommonSchemas.Attacker = {
-    org.red.zkb4s.CommonSchemas.Attacker(
+  private implicit def attacker2attacker(attacker: Attackers): CommonSchemas.Attacker = {
+    schema.CommonSchemas.Attacker(
       shipId = Some(attacker.shipTypeID),
-      character = org.red.zkb4s.CommonSchemas.Character(
+      character = schema.CommonSchemas.Character(
         characterId = Some(attacker.characterID),
         corporationId = Some(attacker.corporationID),
         allianceId = Some(attacker.allianceID)),
@@ -107,10 +108,10 @@ object ZkillboardSchema2CommonSchema {
       securityStatus = attacker.securityStatus)
   }
 
-  private implicit def position2position(position: Option[Position]): Option[org.red.zkb4s.CommonSchemas.Position] = {
+  private implicit def position2position(position: Option[Position]): Option[CommonSchemas.Position] = {
     position match {
       case Some(posn) => {
-        Some(org.red.zkb4s.CommonSchemas.Position(
+        Some(schema.CommonSchemas.Position(
           x = posn.x,
           y = posn.y,
           z = posn.z
@@ -120,15 +121,15 @@ object ZkillboardSchema2CommonSchema {
     }
   }
 
-  private implicit def zkb2zkbMetaData(zkb: Zkb): org.red.zkb4s.CommonSchemas.ZkbMetaData = {
-    org.red.zkb4s.CommonSchemas.ZkbMetaData(
+  private implicit def zkb2zkbMetaData(zkb: Zkb): CommonSchemas.ZkbMetaData = {
+    schema.CommonSchemas.ZkbMetaData(
       hash = zkb.hash,
       totalValue = zkb.totalValue,
       points = zkb.points)
   }
 
-  implicit def converter(killmail: Killmail): org.red.zkb4s.CommonSchemas.Killmail = {
-    org.red.zkb4s.CommonSchemas.Killmail(
+  implicit def converter(killmail: Killmail): CommonSchemas.Killmail = {
+    schema.CommonSchemas.Killmail(
       killId = killmail.killID,
       killTime = string2Date(killmail.killTime),
       victim = victim2victim(killmail.victim).copy(items = killmail.items.map(item2item)),

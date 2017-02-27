@@ -1,4 +1,4 @@
-package org.red.zkb4s
+package org.red.zkb4s.schema
 
 import java.util.Date
 

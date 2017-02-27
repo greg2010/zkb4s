@@ -1,10 +1,12 @@
 package org.red.zkb4s.RedisQ
 
 import scala.language.implicitConversions
-
-import  RedisQSchema._
+import RedisQSchema._
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import org.red.zkb4s.schema
+import org.red.zkb4s.schema.CommonSchemas
 
 object RedisQSchema {
 
@@ -23,7 +25,7 @@ object RedisQSchema {
 
   case class EntityDef(id: Long, name: Option[String])
 
-  case class WeaponType(id: Option[Long], name: String)
+  case class WeaponType(id: Option[Long], name: Option[String])
 
   // id is [None] if WeaponType is Ship
 
@@ -78,18 +80,18 @@ object RedisQSchema2CommonSchema {
     entity.id
   }
 
-  private implicit def item2item(item: Item): org.red.zkb4s.CommonSchemas.Item = {
-    org.red.zkb4s.CommonSchemas.Item(
+  private implicit def item2item(item: Item): CommonSchemas.Item = {
+    schema.CommonSchemas.Item(
       itemId = item.itemType,
       quantityDestroyed = item.quantityDestroyed.getOrElse(0),
       quantityDropped = item.quantityDropped.getOrElse(0)
     )
   }
 
-  private implicit def victim2victim(victim: Victim): org.red.zkb4s.CommonSchemas.Victim = {
-    org.red.zkb4s.CommonSchemas.Victim(
+  private implicit def victim2victim(victim: Victim): CommonSchemas.Victim = {
+    schema.CommonSchemas.Victim(
       shipId = victim.shipType,
-      character = org.red.zkb4s.CommonSchemas.Character(
+      character = schema.CommonSchemas.Character(
         characterId = victim.character,
         corporationId = Some(victim.corporation.id),
         allianceId = victim.alliance),
@@ -98,36 +100,36 @@ object RedisQSchema2CommonSchema {
     )
   }
 
-  private implicit def attacker2attacker(attacker: Attacker): org.red.zkb4s.CommonSchemas.Attacker = {
-    org.red.zkb4s.CommonSchemas.Attacker(
+  private implicit def attacker2attacker(attacker: Attacker): CommonSchemas.Attacker = {
+    schema.CommonSchemas.Attacker(
       shipId = attacker.shipType,
-      character = org.red.zkb4s.CommonSchemas.Character(
+      character = schema.CommonSchemas.Character(
         characterId = attacker.character,
         corporationId = attacker.corporation,
         allianceId = attacker.alliance),
-      weaponType = attacker.weaponType.getOrElse(WeaponType(None, "")).id,
+      weaponType = attacker.weaponType.getOrElse(WeaponType(None, None)).id,
       damageDone = attacker.damageDone,
       finalBlow = attacker.finalBlow,
       securityStatus = attacker.securityStatus)
   }
 
-  private implicit def position2position(position: Position): Option[org.red.zkb4s.CommonSchemas.Position] = {
+  private implicit def position2position(position: Position): Option[CommonSchemas.Position] = {
 
-    Some(org.red.zkb4s.CommonSchemas.Position(
+    Some(schema.CommonSchemas.Position(
       x = position.x,
       y = position.y,
       z = position.z))
   }
 
-  private implicit def zkb2zkbMetaData(zkb: Zkb): org.red.zkb4s.CommonSchemas.ZkbMetaData = {
-    org.red.zkb4s.CommonSchemas.ZkbMetaData(
+  private implicit def zkb2zkbMetaData(zkb: Zkb): CommonSchemas.ZkbMetaData = {
+    schema.CommonSchemas.ZkbMetaData(
       hash = zkb.hash,
       totalValue = zkb.totalValue,
       points = zkb.points)
   }
 
-  implicit def converter(killPackage: KillPackage): org.red.zkb4s.CommonSchemas.Killmail = {
-    org.red.zkb4s.CommonSchemas.Killmail(
+  implicit def converter(killPackage: KillPackage): CommonSchemas.Killmail = {
+    schema.CommonSchemas.Killmail(
       killId = killPackage.killID,
       killTime = string2Date(killPackage.killmail.killTime),
       victim = killPackage.killmail.victim,
