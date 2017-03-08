@@ -30,7 +30,7 @@ class ReqisQAPI(queueId: String = "", ttw: FiniteDuration = 10.seconds, customUs
   private val httpRequest: HttpRequest = Http(url)
     .method("GET")
     .header("User-Agent", userAgent)
-    .timeout(ttw.toMillis.toInt + 2, ttw.toMillis.toInt + 2)
+    .timeout((ttw + 2.seconds).toMillis.toInt, (ttw + 2.seconds).toMillis.toInt)
 
   def poll(): Task[Either[Throwable, CommonSchemas.Killmail]] = {
     Task {
