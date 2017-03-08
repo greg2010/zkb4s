@@ -1,4 +1,4 @@
-package org.red.zkb4s.zkb
+/*package org.red.zkb4s.zkb
 
 import io.circe.generic.auto._
 import org.http4s._
@@ -37,7 +37,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
         image: String
     )
 
-    def apply(f: Filters.Filters = Filters.typeID, s: String)(implicit c: Client): Task[List[AutocompleteResult]] = {
+    def apply(f: Filters.Filters = Filters.typeID, s: String): Task[List[AutocompleteResult]] = {
       val fullurl = s"${baseurl}autocomplete/${f.toString}/$s"
       val req = Request(uri = Uri.fromString(fullurl).toOption.get, method = Method.GET)
         .putHeaders(Header("User-Agent", useragent))
@@ -50,7 +50,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
 
 
   object stats {
-    def alliance(id: Long)(implicit c: Client) = {
+    def alliance(id: Long) = {
       val fullurl = baseurl + "api/stats/allianceID/%d/".format(id)
 
       val req = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
@@ -59,7 +59,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
 
       c.fetchAs[StatsSchema.AllianceInfo](req)
     }
-    def corporation(id: Long)(implicit c: Client) = {
+    def corporation(id: Long) = {
       val fullurl = baseurl + "api/stats/corporationID/%d/".format(id)
       val req     = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
@@ -67,7 +67,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
 
       c.fetchAs[StatsSchema.CorporationInfo](req)
     }
-    def character(id: Long)(implicit c: Client) = {
+    def character(id: Long) = {
       val fullurl = baseurl + "api/stats/characterID/%d/".format(id)
       val req     = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
@@ -78,3 +78,4 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
   }
 
 }
+*/

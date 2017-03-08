@@ -28,7 +28,7 @@ class RedisQSpec extends FlatSpec with Matchers {
 
   "redisq query" should "not fail" in {
     val redisq = new ReqisQAPI(queueId = "test", ttw = 1.seconds)
-    println(redisq.stream())
+    println(s"Fetched kill with killId=${redisq.stream().next().right.get.killId}")
   }
 
 }

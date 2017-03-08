@@ -1,10 +1,6 @@
-package org.red.zkb4s.zkb
+/*package org.red.zkb4s.zkb
 
 import io.circe.generic.auto._
-import org.http4s.Uri.Path
-import org.http4s.circe._
-import org.http4s.client.Client
-import org.http4s.{Uri, _}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.red.zkb4s.schema.CommonSchemas
@@ -14,7 +10,7 @@ import org.red.zkb4s.zkb.ZkillboardSchema2CommonSchema.converter
 import scalaz.concurrent.Task
 
 case class ZKBRequest(
-    baseurl: Uri = Uri.uri("https://zkillboard.com/api"),
+    baseurl = "https://zkillboard.com/api",
     useragent: String = "pizza-zkbapi, unknown application",
     sort: String = "desc",
     modifiers: Map[String, Long] = Map(),
@@ -73,4 +69,4 @@ case class ZKBRequest(
       Task(res.map(ZkillboardSchema2CommonSchema.converter))
     }
   }
-}
+}*/
