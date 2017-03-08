@@ -5,7 +5,6 @@ import org.red.zkb4s.RedisQ.RedisQSchema2CommonSchema.converter
 import org.scalatest._
 import io.circe.parser._
 import io.circe.generic.auto._
-import org.http4s.client.blaze.SimpleHttp1Client
 import scala.concurrent.duration._
 
 import scala.io.Source
@@ -28,7 +27,6 @@ class RedisQSpec extends FlatSpec with Matchers {
   }
 
   "redisq query" should "not fail" in {
-    implicit val c = SimpleHttp1Client()
     val redisq = new ReqisQAPI(queueId = "test", ttw = 1.seconds)
     println(redisq.stream())
   }

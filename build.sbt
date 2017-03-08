@@ -13,13 +13,14 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 resolvers += Resolver.jcenterRepo
 
-val http4sVersion = "0.15.5a"
+val scalazVersion = "7.2.9"
 val circeVersion = "0.7.0"
 
 libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.9.7",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
-  "org.scalaz" %% "scalaz-core" % "7.2.9",
+  "org.scalaz" %% "scalaz-core" % scalazVersion,
+  "org.scalaz" %% "scalaz-concurrent" % scalazVersion,
   "org.scalaj" %% "scalaj-http" % "2.3.0",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
