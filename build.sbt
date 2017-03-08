@@ -20,12 +20,9 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.9.7",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "org.scalaz" %% "scalaz-core" % "7.2.9",
+  "org.scalaj" %% "scalaj-http" % "2.3.0",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "org.http4s" %% "http4s-core" % http4sVersion,
-  "org.http4s" %% "http4s-blaze-client" % http4sVersion,
-  "org.http4s" %% "http4s-client" % http4sVersion,
-  "org.http4s" %% "http4s-circe" % http4sVersion,
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
